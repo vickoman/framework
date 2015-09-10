@@ -1,0 +1,34 @@
+
+ ~ Bitphp ~
+
+ [bold_green]General management
+   [bold_white]php dummy --help, -h     [white]- Muestra este mensage
+   [bold_white]php dummy --version, -v  [white]- Informacion de la version
+   [bold_white]php dummy --about, -a    [white]- Acerca de bitphp
+   [bold_white]php dummy --update, -u   [white]- Verifica actualizaciones
+
+ [bold_green]Error management
+   [bold_white]php dummy error               [white]- Lista los errores registrados
+   [bold_white]php dummy error --id, -i <id> [white]- Muestra detalles del error
+   [bold_white]php dummy error --dump, -d    [white]- Limpia el registro de errores
+
+ [bold_green]Trash management
+   [bold_white]php dummy trash                     [white]- Lista los respaldos de la papelera
+   [bold_white]php dummy trash --remove-app, -r    [white]- Mueve la aplicacion a la basura
+   [bold_white]php dummy trash --backup, -b <name> [white]- Restaura los ficheros de respaldo
+ 
+ [bold_green]Cache management
+   [bold_white]php dummy cache            [white]- Indica cuantos  archivos hay en cache
+   [bold_white]php dummy cache --dump, -d [white]- Limpia el cache
+
+ [bold_green]Database management
+   [bold_white]php dummy migrations up all/all     [white]- Ejecuta las migraciones disponibles
+   [bold_white]php dummy migrations down all/all   [white]- Deshace todas las migraciones
+   [bold_white]php dummy migrations up db/table    [white]- Ejecuta las migraciones indicadas
+   [bold_white]php dummy migrations down db/table  [white]- Deshace las migraciones indicadas
+   
+ [bold_green]Environment management
+   [bold_white]php dummy environment                    [white]- Lista los entornos disponibles
+   [bold_white]php dummy environment --switch,-s        [white]- Cambia al siguiente entorno
+   [bold_white]php dummy environment --switch,-s <name> [white]- Cambia al entorno indicado
+   

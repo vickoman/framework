@@ -1,0 +1,393 @@
+<?php
+
+/**
+ * Bitphp Framework Command Line Interface
+ */
+
+require 'bitphp/autoload.php';
+   
+use \Bitphp\Core\Trash;
+use \Bitphp\Core\Globals;
+use \Bitphp\Core\Config;
+use \Bitphp\Core\Environment;
+use \Bitphp\Core\LogManager;
+use \Bitphp\Base\CliApplication;
+use \Bitphp\Modules\Cli\Arguments;
+use \Bitphp\Modules\Cli\StandardIO;
+use \Bitphp\Modules\Utilities\TimeDiff;
+use \Bitphp\Modules\Utilities\File;
+use \Bitphp\Modules\Utilities\Random;
+use \Bitphp\Modules\Database\Migration;
+
+$cli = new CliApplication();
+
+/**
+ * Environment command
+ *
+ * Show and switch bettween the available develop environments
+ */
+$cli->doCommand('environment', function(){
+   $environment = Environment::info();
+
+   $current_environment = $environment['current'];
+
+   $flag = Arguments::flag('switch');
+   if(false !== $flag) {
+      $switched = Environment::doSwitch(Arguments::get($flag));
+      if($switched === false) {
+         StandardIO::output(' [bold_red]~ No hay entornos disponibles para alternar o no se tiene permisos para hacerlo');
+         return;
+      }
+
+      StandardIO::output(" ~ Cambiando entorno de $current_environment a $switched...");
+      return;
+   }
+
+   StandardIO::output(' ~ Trabajando en entorno [bold_green]' . $environment['current']);
+   
+   if(!empty($environment['available'])) {
+      StandardIO::output(' ~ Entornos disponibles: ');
+      foreach ($environment['available'] as $env) {
+         StandardIO::output('      - ' . $env);
+      }
+   }
+});
+
+/**
+ * Migrations command
+ *
+ * This command call the bitphp's module for make migrations; up, down, and
+ * make seeds, for up or down the user for db connection in config.json need 
+ * privileges
+ */
+$cli->doCommand('migrations ($action) ($subject)', function($action, $subject) {
+   switch ($action) {
+
+      //action to up migrations using the diaposable seeds
+      case 'up':
+         $migrations = Migration::up($subject);
+         
+         foreach ($migrations['tables'] as $migration) {
+            StandardIO::output(' ~ Creando tabla a partir de ' . $migration);
+            usleep(25000);
+         }
+
+         StandardIO::output(" ~ Consultas ejecutadas:\n");
+
+         foreach ($migrations['queries'] as $query) {
+            StandardIO::output("$query\n");
+            usleep(25000);
+         }
+      break;
+
+      //remove the tables using the diaposable seeds
+      case 'down':
+         $migrations = Migration::down($subject);
+
+         foreach ($migrations['tables'] as $migration) {
+            StandardIO::output(' ~ Eliminando tabla a partir de ' . $migration);
+            usleep(25000);
+         }
+
+         StandardIO::output(" ~ Consultas ejecutadas:\n");
+
+         foreach ($migrations['queries'] as $query) {
+            StandardIO::output("\n$query\n");
+            usleep(25000);
+         }
+      break;
+         
+      default:
+         StandardIO::output('[bold_red] ~ Opcion de migracion invalida...');
+      break;
+   }
+});
+
+/**
+ * Cache command
+ *
+ * if no any flag is passed this command count the files in cache , if flag --dump 
+ * is passed, then the cache will be erased.
+ */
+$cli->doCommand('cache', function(){
+   $cached = File::explore(Globals::get('base_path') . '/olimpus/cache');
+   array_shift($cached);
+
+   StandardIO::output(' ~ ' . count($cached) . ' ficheros en cache');
+
+   $flag = Arguments::flag('dump');
+   if($flag !== false) {
+      foreach ($cached as $file) {
+         $deleted = @unlink($file);
+         if($deleted == false) {
+            StandardIO::output(' [back_red]~ permiso denegado');
+            return;
+         }
+      }
+
+      StandardIO::output(' ~ El cache fue limpiado');
+   }
+});
+
+
+/**
+ * Log error manager command
+ *
+ * This command uses ErrorLogManager class for list, erase, or view some error.
+ */
+$cli->doCommand('error', function() {
+   $flag = Arguments::flag('id');
+   if($flag !== false) {
+      $error_id = Arguments::get($flag);
+      $error  = LogManager::search($error_id);
+
+      if(false === $error) {
+         StandardIO::output("[bold_red]   Registro $error_id no encontrado...");
+         return;
+      }
+
+      $date = TimeDiff::getTimeAgo($error['date']);
+      $message = $error['message'];
+      
+      StandardIO::output("\n ~ Hace $date");
+      StandardIO::output(" ~ $message", $error['level']);
+
+      $info = '';
+
+      if(
+            !empty($error['context']['file']) 
+         && !empty($error['context']['line'])
+         && !empty($error['context']['request_uri'])
+        ) 
+      {
+         $file = $error['context']['file'];
+         $line = $error['context']['line'];
+         $url  = $error['context']['request_uri'];
+
+         unset(
+              $error['context']['file']
+            , $error['context']['line']
+            , $error['context']['request_uri']
+         );
+
+         $info .= "\n ~ Desde [bold_blue]$file ";
+         $info .= "[bold_white]en la linea [bold_blue]$line\n";
+         $info .= "[bold_white] ~ Url [bold_blue]$url\n\n";
+      }
+
+      if(!empty($error['context']['trace'])) {
+
+         $info .= "[bold_white] ~ Stacktrace\n";
+
+         foreach ($error['context']['trace'] as $trace) { 
+
+            if(!empty($trace['file'])) {
+               $file = $trace['file'];
+               $line = $trace['line'];
+
+               $info .= "   Dentro de [bold_blue]$file ";
+               $info .= "[bold_white]en la linea [bold_blue]$line\n";
+            }
+         }
+
+         unset($error['context']['trace']);
+      }
+
+      StandardIO::output($info);
+
+      if(!empty($error['context'])) {
+         StandardIO::output(" ~ Contexto\n");
+         $context = explode("\n", var_export($error['context'], true));
+         
+         array_shift($context);
+
+         foreach ($context as $line) {
+            $line = str_replace(' => ', ' [bold_yellow]=>[bold_green] ', $line);
+            $line = substr($line, 0, -1);
+
+            if(!preg_match('/(.*)\)(.*)/', $line))
+               StandardIO::output(" [bold_white]$line");
+         }
+      }
+
+      return;         
+   }
+
+   $flag = Arguments::flag('dump');
+   if($flag !== false) {
+      $removed = LogManager::dump();
+
+      if($removed === false) {
+         StandardIO::output("   [back_red]permiso denegado");
+         return;
+      }
+
+      StandardIO::output("   [back_green]Se limpio el registro de errores");
+      return;
+   }
+
+   $errors  = LogManager::getArrayLog();
+   StandardIO::output("\n ~ Registro de errores");
+
+   $counter = 0;
+   foreach ($errors as $error) {
+      $error = json_decode($error, true);
+
+      if(empty($error))
+         continue;
+
+      $id   = $error['id'];
+      $date = TimeDiff::getTimeAgo($error['date']);
+      $message = substr($error['message'], 0, 60);
+
+      StandardIO::output("\n[bold_white]   [" . ucfirst($error['level']) . "]");
+      StandardIO::output("   $id - Hace $date");
+      StandardIO::output("   $message...", $error['level']);
+      $counter++;
+   }
+
+   StandardIO::output("\n   [back_white] $counter Errores en total \n");
+});
+
+/**
+ * Command for trash manager
+ *
+ * this command uses the Trash manager class
+ */
+$cli->doCommand('trash', function(){
+   $flag = Arguments::flag('remove-app');
+   if($flag !== false) {
+      StandardIO::output(' ~ Analizando...');
+      $files = Trash::scan();
+
+      if(empty($files)){
+         StandardIO::output(' ~ Ningun archivo para eliminar...');
+         return;
+      }
+
+      foreach ($files as $file) {
+         StandardIO::output("[bold_red]   $file");
+         usleep(25000);
+      }
+
+      StandardIO::output(' ~ ' . count($files) . " archivos para mover a la basura");
+      StandardIO::output(" ~ Mover a papelera? [bold_blue][s/N] ", null, false);
+
+      $option = strtolower(StandardIO::input());
+      if($option != 's')
+         return;
+
+      StandardIO::output("\n   Se almacenara un respaldo en papelera");
+      StandardIO::output("   ingresa un nombre para dicho respaldo");
+      StandardIO::output("\n ~ Nombre de respaldo (opcional): ", null, false);
+
+      $input = StandardIO::input();
+      $backup_name = $input != '' ? $input : Random::string(6);
+
+      $backup = Trash::remove($files, $backup_name);
+
+      StandardIO::output(" ~ Backup en $backup");
+      StandardIO::output(" ~ Ficheros de aplicacion removidos");
+      return;
+   }
+
+   $flag = Arguments::flag('backup');
+   if($flag !== false) {
+      $name = Arguments::get($flag);
+      if($name === null){
+         StandardIO::output(' [back_red]~ Indica un nombre');
+         return;
+      }
+
+      StandardIO::output(" ~ Restaurando el backup [bold_blue]$name");
+
+      $force_restore = Arguments::flag('force-restore');
+      $restore = Trash::restore($name, $force_restore);
+
+      if($restore === false) {
+         StandardIO::output(" [back_red]~ El respaldo $name no existe");
+         return;
+      }
+
+      extract($restore);
+      StandardIO::output(" $count archivos para restaurar...");
+
+      foreach ($files['restored'] as $file) {
+         StandardIO::output("[bold_green] ~ $file ... Restaurado");
+         usleep(25000);
+      }
+
+      foreach ($files['to_overwrite'] as $file) {
+         StandardIO::output("[bold_yellow] ~ $file ... Ya existe");
+         usleep(25000);
+      }
+
+      foreach ($files['missing'] as $file) {
+         StandardIO::output("[bold_red] ~ $file ... Sin respaldo");
+         usleep(25000);
+      }
+
+      if(!empty($files['to_overwrite'])) {
+         StandardIO::output(" [bold_red]~ Algunos archivos no fueron restaurados");
+         StandardIO::output(" [bold_red]~ Intenta con trash --force-restore");
+      }
+
+      if(!empty($files['missing'])) {
+         StandardIO::output(" [bold_red]~ Algunos archivos de respaldo fueron eliminados, ya no se podra restaurar por completo");
+      }
+
+      return;
+   }
+
+   // if any flag was passed, list the backups
+   StandardIO::output(" ~ Lista de respaldos en la papelera");
+   $backups = Trash::getBackupsList();
+
+   if(empty($backups))
+      StandardIO::output(" ~ Sin respaldos");
+
+   foreach ($backups as $backup => $data) {
+      $files = $data['meta']['count'];
+      $date  = TimeDiff::getTimeAgo($data['meta']['date']);
+      StandardIO::output("   Backup [bold_blue]$backup [bold_white]$files archivos hace $date");
+   }
+});
+
+/**
+ * In default command switch between some flags, for help, version, etc.
+ * if any flag was passed or don't exists, shows a error message
+ */
+$cli->doCommand('default', function() {
+   $flag = Arguments::flag('help');
+   if($flag !== false) {
+      $help = file_get_contents('olimpus/system/cli_help');
+      StandardIO::output($help);
+      return;
+   }
+
+   $flag = Arguments::flag('version');
+   if($flag !== false) {
+      $info = file_get_contents('olimpus/system/info');
+      StandardIO::output($info);
+      return;
+   }
+
+   $flag = Arguments::flag('about');
+   if($flag !== false) {
+      $about = file_get_contents('olimpus/system/about');
+      StandardIO::output($about);
+      return;
+   }
+
+   $flag = Arguments::flag('update');
+   if($flag !== false) {
+      $advice = file_get_contents('olimpus/system/update_advice');
+      StandardIO::output($advice);
+      return;
+   }
+
+   StandardIO::output("   [back_red]Comando invalido");
+   StandardIO::output("   [back_white]--help para ver ayuda");
+});
+
+$cli->run();
