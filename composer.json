@@ -1,5 +1,5 @@
 {
-    "name": "bitphp/bitphp",
+    "name": "bitphp/framework",
     "type": "project",
     "description": "PHP Framework for dummies",
     "keywords": ["php", "framework", "mvc", "hmvc", "oop","sockets"],
@@ -19,7 +19,7 @@
     },
     "repository":{
         "type":"git",
-        "url":"https://github.com/0oeduardoo0/bitphp"
+        "url":"https://github.com/bitphp/framework"
     },
     "require": {
         "php":">=5.4.0"
