@@ -168,7 +168,6 @@ $bitphp_loader->add('Bitphp\Exceptions', 'bitphp/bitphp-exceptions/src');
 $bitphp_loader->add('Bitphp\Core', 'bitphp/bitphp-core/src');
 $bitphp_loader->add('Bitphp\Base', 'bitphp/bitphp-base/src');
 $bitphp_loader->add('Bitphp\Modules', 'bitphp/bitphp-modules/src');
-$bitphp_loader->add('Bitphp\Cli', 'bitphp/bitphp-cli/src');
 $bitphp_loader->add('App\Models', 'app/models');
 $bitphp_loader->add('App\Controllers', 'app/controllers');
 $bitphp_loader->add('App\Migrations', 'app/migrations');

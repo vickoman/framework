@@ -29,7 +29,6 @@
             "Bitphp\\Core\\": "bitphp/bitphp-core/src",
             "Bitphp\\Base\\": "bitphp/bitphp-base/src",
             "Bitphp\\Modules\\": "bitphp/bitphp-modules/src",
-            "Bitphp\\Cli\\": "bitphp/bitphp-cli/src",
             "Bitphp\\Exceptions\\": "bitphp/bitphp-exceptions/src",
             "App\\Models\\": "app/models",
             "App\\Controllers\\": "app/controllers",
