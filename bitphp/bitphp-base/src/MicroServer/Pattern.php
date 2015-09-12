@@ -17,6 +17,9 @@
        * @return string
        */
       public static function create($route) {
+         if(strlen($route) > 1)
+          $route = rtrim($route, '\/');
+
          $search = [
               '/\//'
             , '/\((int|integer)(\s+\$\w+)?\)/'
