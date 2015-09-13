@@ -40,7 +40,11 @@
           , 'request_uri' => Globals::get('base_url') . '/' . Globals::get('request_uri')
         ];
 
-        $context['identifier'] = $this->log->error($message, $context);
+        $save_log = Config::param('errors.log');
+        
+        if(false !== $save_log)
+          $context['identifier'] = $this->log->error($message, $context);
+
         $this->errors[] = $context;
       }
 

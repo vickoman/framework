@@ -1,0 +1,7 @@
+{
+    "current": "develop",
+    "available": [
+        "develop",
+        "production"
+    ]
+}

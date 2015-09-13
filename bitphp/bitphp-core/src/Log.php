@@ -2,7 +2,6 @@
 
    namespace Bitphp\Core;
 
-   use \Bitphp\Core\Config;
    use \Bitphp\Core\Globals;
    use \Bitphp\Modules\Utilities\File;
 
@@ -22,10 +21,6 @@
        *                  con el identificador del error si este se guardo
        */
       protected static function record($level, $message, $context) {
-         $save_log = Config::param('errors.log');
-         if(false === $save_log)
-          return false;
-
          # id es un hash md5 formado por la fecha y un numero aleatorio
          $date = date(DATE_ISO8601);
          $identifier  = md5($date . rand(0, 9999));

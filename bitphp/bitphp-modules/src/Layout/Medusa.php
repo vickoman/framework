@@ -137,7 +137,7 @@
          }
 
          $compress = Config::param('medusa.compress');
-         if(false !== $compress)
+         if(true === $compress)
             $this->source = $this->compress($this->source);
       }
 

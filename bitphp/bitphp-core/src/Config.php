@@ -35,7 +35,7 @@
          }
 
 
-         $file = Globals::get('base_path') . "/config/$file.$mime";
+         $file = Globals::get('base_path') . "/app/config/$file.$mime";
 
          if(file_exists($file)) {
             $content = file_get_contents($file);

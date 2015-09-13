@@ -41,9 +41,8 @@
       public static function doSwitch($next_environment=null) {
          $environment = self::info();
 
-         if(empty($environment['available'])) {
+         if(empty($environment['available']))
             return false;
-         }
 
          if($next_environment === null) {
             $index = (array_search($environment['current'], $environment['available'])) + 1;

@@ -1,0 +1,20 @@
+{
+   "errors.debug": true,
+   "errors.log": true,
+   "database.host": "localhost",
+   "database.pass": "yourPassword",
+   "database.user": "root",
+   "medusa.compress": false,
+   "views.cache.life": 300,
+   "views.cache": false,
+   "auth.token.signature": "Holamundo123_",
+   "auth.token.life": 300,
+   "trash.ignore": [
+      "(.*)/app/config.json",
+      "(.*)/app/.htaccess",
+      "(.*)/public/css/bootstrap.css",
+      "(.*)/public/js/bootstrap.js",
+      "(.*)/public/js/jquery.js",
+      "(.*)/index.php"
+   ]
+}
