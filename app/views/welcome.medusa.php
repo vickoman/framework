@@ -3,6 +3,8 @@
 <head>
    <title>Bitphp | Yeah!</title>
    <meta charset="utf8">
+   <link rel="shortcut icon" href="{{ :base }}/favicon.ico" type="image/x-icon">
+   <link rel="icon" href="{{ :base }}/favicon.ico" type="image/x-icon">
    :css bootstrap
    :css bitphp.bootstrap.theme
 </head>
