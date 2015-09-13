@@ -1,25 +1,30 @@
-# BitPHP Dev/Experimental repo
+[![Latest Stable Version](https://poser.pugx.org/bitphp/framework/v/stable)](https://packagist.org/packages/bitphp/framework) 
+[![Total Downloads](https://poser.pugx.org/bitphp/framework/downloads)](https://packagist.org/packages/bitphp/framework) 
+[![Latest Unstable Version](https://poser.pugx.org/bitphp/framework/v/unstable)](https://packagist.org/packages/bitphp/framework)
+[![License](https://poser.pugx.org/bitphp/framework/license)](https://packagist.org/packages/bitphp/framework)
 
-# Cosas en las qué se esta trabajando o faltan por hacer
-- Comentar algunos modulos (Para la documentacion de PhpDocumentor)
-- Test unitarios de mudulos y algunos archivos del nucleo
-- Terminar con las funcionalidades qué tenia la CLI en la version anterior
-- Terminar de implementar el servicio Hmvc
-- Comenzar la imlementacion de servicio de sockets
-- Hacer qué los colores de la consola trabajen en windows (ver bitphp/bitphp-modules/src/Cli/Colors.php)
+# Bitphp Framework - Núcleo
 
-# Modulos por crear:
-- Sql Query builder
-- Un ORM estaría bien xD (y si no, se puede usar uno de los muchos disponibles a través de composer)
-- Modulo para validacion de tipos de datos (si es una pass, ip, numero, etc...)
-- Modulo de conexion para Oracle, Postgres y otros manejadores
-- ... no olvides aportar tus ideas :D
+Framework para el desarrollo web, herramienta orientada a la creación rápida y sencilla de aplicaciones o sitios web, aún si tienes pocos conocimientos en ello.
 
-# New Features
+## Filosofía
 
-- **PSR-4: Autocarga de clases**
-- **Nuevo y mejorado motor de plantillas**
-- **Integracion de Composser**
-- **Sistema de cache**
-- **Menos configuración para poder andar (de hecho ya no depende forsozamente del archivo de configuración)**
-- **Base para la creacion de aplicaciones de linea de comandos**
+Grandes problemas, pequeñas soluciones. No importa la complejidad del problema qué debas resolver, este puede, y debe, tener una solución sencilla y elegante.
+
+## Características
+
+Con bitphp puedes crear aplicaciones de diferentes maneras; Mvc, Hmvc, Enrutamiento basado en URI, Sockets y aplicaciones de consola fácilmente.
+
+## Documentación
+
+> **Nota:** La documentación de bitphp aún se esta escribiendo.
+
+Encuentra la documentación de bitphp en [su sitio web](http://bitphp.root404.com/docs/4.x)
+
+## Licencia
+
+Bitphp esta publicado bajo la licencia GNU/GPL versión 2, por lo qué puedes disponer total o parcialmente de su código, respetando los lineamientos de la licecia.
+
+## Contribuye al desarrollo del núcleo
+
+Para reportar vulnerabilidades de seguridad, participar en el desarrollo del núcleo, testeando Bitphp, diseñando el arte de Bitphp, en la pagina web, traducciones o revisión de la documentación eres bienvenido, contacta con nosotros bitphp@root404.com.
