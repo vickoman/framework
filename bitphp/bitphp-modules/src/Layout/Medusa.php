@@ -74,6 +74,9 @@
          $this->readBlocks($parent);
          $this->readBlocks($source);
 
+         if(empty($this->blocks))
+            return $parent;
+
          foreach ($this->blocks as $name => $value) {
             $pattern = '/' . MT_BLOCK_START . $name . '(\s+)(.*)' . MT_BLOCK_END . '/Usx';
             $parent = preg_replace($pattern, $value, $parent);

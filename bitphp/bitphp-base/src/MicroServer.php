@@ -74,6 +74,10 @@
             return $this->registreRoute($http_method, $route, $callback);
          }
 
+         if(preg_match('/^set(\w+)$/', $method, $matches)) {
+            return $this->set(lcfirst($matches[1]), $args[0]);
+         }
+
          throw new Exception('La clase ' . __CLASS__ . " no contiene el metodo $method", 1);
       }
 
