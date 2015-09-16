@@ -24,8 +24,16 @@
          }
       }
 
-      public function select($items = '*') {
-         $this->builded_query = "SELECT $items FROM $this->table";
+      public function select(...$items) {
+         $fields = '';
+
+         foreach ($items as $item) {
+            $fields .= "$item,";
+         }
+
+         $fields = trim($fields, ',');
+
+         $this->builded_query = "SELECT $fields FROM $this->table";
          return $this;
       }
 

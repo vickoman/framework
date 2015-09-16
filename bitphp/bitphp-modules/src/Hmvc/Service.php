@@ -44,7 +44,7 @@
        *
        *   @param string $request Ruta del modulo a correr
        */
-      public static function run($request, $_args = array()) {
+      public static function run($request, ...$_args) {
          $route = Route::parse($request);
          extract($route);
 

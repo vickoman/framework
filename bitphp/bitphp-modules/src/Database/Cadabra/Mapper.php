@@ -19,7 +19,7 @@
        */
       private static function databaseName() {
          $parts = explode('\\', __CLASS__);
-         return strtolower($parts[2]);
+         return strtolower($parts[count($parts) - 2]);
       }
 
       /**
@@ -29,7 +29,7 @@
        */
       private static function tableName() {
          $parts = explode('\\', __CLASS__);
-         return strtolower($parts[3]);
+         return strtolower($parts[count($parts) - 1]);
       }
 
       /**
@@ -44,13 +44,13 @@
          $map = array();
 
          if(!isset($this->provider))
-          $this->provider = null;
+          trigger_error('No se indico ningún proveedor de base de datos');
 
          $map['provider'] = $this->provider;
          
          $map['database'] = $this->databaseName();
          if(isset($this->alias))
-            $map['database'] = "alias.$database";
+            $map['database'] = 'alias.' . $map['database'];
 
          $map['table'] = $this->tableName();
          return $map;
