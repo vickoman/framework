@@ -35,8 +35,8 @@
           */
          global $loader;
 
-         $loader->add("\\$application\\Models", "app/modules/$application/models");
-         $loader->add("\\$application\\Controllers", "app/modules/$application/controllers");
+         $loader->addPsr4("App\\$application\\Models\\", "app/modules/$application/models");
+         $loader->addPsr4("App\\$application\\Controllers\\", "app/modules/$application/controllers");
       }
 
       /**
@@ -44,7 +44,7 @@
        *
        *   @param string $request Ruta del modulo a correr
        */
-      public static function run($request, $_args = array(), $print = true) {
+      public static function run($request, $_args = array()) {
          $route = Route::parse($request);
          extract($route);
 
@@ -58,26 +58,16 @@
          }
 
          # se deja al autocargador hacer su trabajo
-         $full_class = "\\$application\\Controllers\\" . $controller;
-         $controller = new $full_class;
+         $full_class = "\\App\\$application\\Controllers\\" . $controller;
+         $controller_obj = new $full_class;
 
-         if(!method_exists($controller, $action)) {
+         if(!method_exists($controller_obj, $action)) {
             $message  = "La clase del controlador '$controller' del modulo '$request' ";
             $message .= "no contiene el metodo '$action'";
             trigger_error($message);
             return;
          }
 
-         ob_start();
-         call_user_func_array(array($controller, $action), $_args);
-
-         $result = ob_get_clean();
-         self::restoreEnvironment();
-
-         if(!$print) {
-            return $result;
-         }
-
-         echo $result;
+         return call_user_func_array(array($controller_obj, $action), $_args);
       }
    }

@@ -8,6 +8,7 @@
   class Response {
 
     protected static $statusCode;
+    protected static $statusMessage = 'OK';
 
     protected static function getStatusCode() {
       return empty(self::$statusCode) ? 200 : self::$statusCode;
@@ -27,7 +28,11 @@
         401 => 'Unauthorized',  
         403 => 'Forbidden',  
         404 => 'Not Found',  
-        405 => 'Method Not Allowed',  
+        405 => 'Method Not Allowed',
+        410 => 'Gone',
+        415 => 'Unsupported Media Type',
+        422 => 'Unprocessable Entity ',
+        429 => 'Too Many Requests',
         500 => 'Internal Server Error'
       ];
 
@@ -36,8 +41,12 @@
         return;
       }
 
-      $statusMessage = $status[$code];
-      header( "HTTP/1.1 $code $statusMessage" );
+      self::$statusMessage = $status[$code];
+      header("HTTP/1.1 $code " . self::$statusMessage);
+    }
+
+    public static function getStatusMessage() {
+      return self::$statusMessage;
     }
 
     public static function xml( $data ) {

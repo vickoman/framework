@@ -50,7 +50,7 @@ class Autoload
      * than last.
      * @return void
      */
-    public function add($prefix, $base_dir, $prepend = false)
+    public function addPsr4($prefix, $base_dir, $prepend = false)
     {
         // normalize namespace prefix
         $prefix = trim($prefix, '\\') . '\\';
@@ -164,14 +164,14 @@ class Autoload
 $bitphp_loader = new Autoload;
 $bitphp_loader->register();
 
-$bitphp_loader->add('Bitphp\Exceptions', 'bitphp/bitphp-exceptions/src');
-$bitphp_loader->add('Bitphp\Core', 'bitphp/bitphp-core/src');
-$bitphp_loader->add('Bitphp\Base', 'bitphp/bitphp-base/src');
-$bitphp_loader->add('Bitphp\Modules', 'bitphp/bitphp-modules/src');
-$bitphp_loader->add('App\Models', 'app/models');
-$bitphp_loader->add('App\Controllers', 'app/controllers');
-$bitphp_loader->add('App\Migrations', 'app/migrations');
-$bitphp_loader->add('App\Events', 'app/events');
-$bitphp_loader->add('App\Listeners', 'app/listeners');
+$bitphp_loader->addPsr4('Bitphp\\Exceptions', 'bitphp/bitphp-exceptions/src');
+$bitphp_loader->addPsr4('Bitphp\\Core', 'bitphp/bitphp-core/src');
+$bitphp_loader->addPsr4('Bitphp\\Base', 'bitphp/bitphp-base/src');
+$bitphp_loader->addPsr4('Bitphp\\Modules', 'bitphp/bitphp-modules/src');
+$bitphp_loader->addPsr4('App\\Models', 'app/models');
+$bitphp_loader->addPsr4('App\\Controllers', 'app/controllers');
+$bitphp_loader->addPsr4('App\\Migrations', 'app/migrations');
+$bitphp_loader->addPsr4('App\\Events', 'app/events');
+$bitphp_loader->addPsr4('App\\Listeners', 'app/listeners');
 
 return $bitphp_loader;

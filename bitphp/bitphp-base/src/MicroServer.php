@@ -45,13 +45,7 @@
          $this->action = $route['action'];
          $this->method = $route['method'];            
          
-         $this->routes = array(
-              'GET' => array()
-            , 'POST' => array()
-            , 'DELETE' => array()
-            , 'PUT' => array()
-         );
-
+         $this->routes = array();
          $this->binded = array();
       }
 
